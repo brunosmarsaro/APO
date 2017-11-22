@@ -1,0 +1,11 @@
+** PARAMETROS DO GA **
+Numero de individuos: 100
+Numero de geracoes: 100
+Probabilidade de crossover: 0.3
+Probabilidade de mutacao: 0.05
+
+
+** PARAMETROS DAS ANTENAS **
+Numero de antenas: 1
+Largura a ser coberta: 20
+Altura a ser coberta: 20
