@@ -6,6 +6,6 @@ Probabilidade de mutacao: 0.05
 
 
 ** PARAMETROS DAS ANTENAS **
-Numero de antenas: 1
-Largura a ser coberta: 20
-Altura a ser coberta: 20
+Numero de antenas: 3
+Largura a ser coberta: 50
+Altura a ser coberta: 200
