@@ -1,5 +1,5 @@
 from math import exp, sqrt, pi
-from random import randint
+from random import randint, random
 
 class GA:
 	def __init__(self, param):	
@@ -11,15 +11,57 @@ class GA:
 		self.largura = param.largura
 		self.altura = param.altura
 
-		self.populacao = self.init_populacao() #mudar para uma esttutura de dados onde tem um evaluation value associado ao individuo
-		print(self.fitness_function(self.populacao[0][0]))
-		
+		self.populacao = self.init_populacao()		
 
 	def run(self):
+		cont = 0
 		while(True):
-			# Evaluation
-			#for i in range(self.n_geracoes):
-			break
+			self.avaliar_populacao()
+			if cont == self.n_geracoes:
+				break
+			cont += 1
+			self.ordenar_populacao()
+			self.selecionar()
+			# SELECIONAR
+			# APLICAR OPERADORES GENETICOS
+
+	def selecionar(self): #TODO: verificar e terminar
+		nova_populacao = []
+		continua_m = int(0.3*self.n_individuos)
+		continua_p = int(0.15*self.n_individuos) + 1
+		for i in range(continua_m):
+			nova_populacao.append(self.populacao[i])
+		for i in range(1, continua_p):
+			nova_populacao.append(self.populacao[self.n_individuos - i])
+
+
+	def ordenar_populacao(self):
+		self.populacao.sort(key=lambda x: x[1], reverse=True)
+
+	def crossover(self, individuo1, individuo2): #TODO
+		pass
+
+	def mutacao(self, individuo): #TODO: Verificar
+		i = randint(0,self.n_antenas-1)
+		if random() < 0.3:
+			individuo[i].x = randint(0,self.largura)
+		if random() < 0.3:
+			individuo[i].y = randint(0,self.altura)
+		if random() < 0.2:
+			individuo[i].pot = randint(1,90)
+
+		return individuo
+			
+	def avaliar_populacao(self):
+		total_fitness = 0
+		for i in range (self.n_individuos):
+			valor_fitness = self.fitness_function(self.populacao[i][0])
+			total_fitness += valor_fitness
+			self.populacao[i][1] = valor_fitness
+
+		for i in range (self.n_individuos):
+			valor_fitness = self.populacao[i][1]/total_fitness
+			self.populacao[i][1] = valor_fitness
 
 	def fitness_function(self, individuo):
 		return ((self.area_coberta(individuo)**2)*(self.sumpot(individuo))*(self.med_dist_antenas(individuo)))/(self.n_antenas)
@@ -75,11 +117,11 @@ class GA:
 		for i in range(self.n_antenas):
 			x = randint(0,self.largura)
 			y = randint(0,self.altura)
-			pot = randint(0,90) #db
+			pot = randint(1,90) #db
 			antena = Antena(x,y,pot)
 			individuo.append(antena)
 
-		individuo = (individuo,0)
+		individuo = [individuo,0]
 		return individuo
 
 class Antena:
