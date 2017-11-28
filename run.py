@@ -11,7 +11,7 @@ def print_area(ga):
 	for antena in ga.populacao[0][0]:
 		r = ga.get_raio(antena)
 		print(r)
-		circulo = plt.Circle((antena.x, antena.y), r, edgecolor='black')
+		circulo = plt.Circle((antena.x, antena.y), r, edgecolor='black', fill=True, alpha=0.5)
 		circulos.append(circulo)
 	fig, ax = plt.subplots()
 	ax.set_xlim((0, ga.largura))

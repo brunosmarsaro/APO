@@ -1,5 +1,5 @@
 from math import exp, sqrt, pi
-from random import randint, random
+from random import randint, random, uniform
 
 class GA:
 	def __init__(self, param):	
@@ -30,7 +30,7 @@ class GA:
 		probs = [sum(norm_fitness[:i+1]) for i in range(len(norm_fitness))]
 		
 		nova_populacao = []
-		cont = 20
+		cont = int(0.2*self.n_individuos)
 
 		for i in range(cont):
 			nova_populacao.append(self.populacao[i])
@@ -78,7 +78,7 @@ class GA:
 		i = randint(0, self.n_antenas-1)
 		individuo[i].x = randint(0,self.largura)
 		individuo[i].y = randint(0,self.altura)
-		individuo[i].pot = randint(1,90)
+		individuo[i].pot = randint(1, 90) #mW
 
 		return individuo
 			
@@ -96,7 +96,19 @@ class GA:
 		return total_fitness
 
 	def fitness_function(self, individuo):
-		return ((self.area_coberta(individuo)**3)*(self.sumpot(individuo)))/(self.n_antenas*(self.med_dist_antenas(individuo)))
+		return ((self.area_coberta(individuo)**2)*(self.sumpot(individuo))*(self.med_dist_antenas(individuo))*(self.punicao(individuo)))/(self.n_antenas)
+
+	def punicao(self, individuo):
+		n = 0
+		for antena in individuo:
+			r = self.get_raio(antena)
+			for dif_antena in [x for x in individuo if x != antena]:
+				d = sqrt((antena.x - dif_antena.x)**2 + (antena.y - dif_antena.y)**2)
+				if d < r:
+					n += 1
+
+		return exp(-3*n)
+
 
 	def area_coberta(self, individuo): #TODO
 		area_total = 0
@@ -111,8 +123,8 @@ class GA:
 	def get_raio(self, antena):
 		# CONSTANTES
 		la = 0.125
-		gr = 63
-		gt = 300
+		gr = 100
+		gt = 150
 		pr = 0.018 # 18 mW
 		pt = antena.pot
 
@@ -137,7 +149,7 @@ class GA:
 		soma = 0
 		for antena in individuo:
 			soma += antena.pot
-		return soma
+		return (soma/self.n_antenas)
 
 	def init_populacao(self):
 		populacao = []
@@ -159,4 +171,4 @@ class Antena:
 	def __init__(self, largura, altura):
 		self.x = randint(0,largura)
 		self.y = randint(0,altura)
-		self.pot = randint(1,90) #db
+		self.pot = randint(1, 90) #db
